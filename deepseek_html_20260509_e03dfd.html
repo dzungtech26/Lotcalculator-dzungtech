@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LotCalc Pro — Forex & Crypto Position Sizing</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #080c14;
+            --surface: #0e1420;
+            --surface2: #141a28;
+            --surface3: #1c2438;
+            --border: rgba(255, 255, 255, 0.07);
+            --border2: rgba(255, 255, 255, 0.12);
+            --green: #00d97e;
+            --green-dim: rgba(0, 217, 126, 0.12);
+            --green-glow: rgba(0, 217, 126, 0.25);
+            --amber: #f5a623;
+            --red: #ff4d6a;
+            --text: #e8eaf2;
+            --muted: #6b7592;
+            --muted2: #4a5270;
+            --blue: #4f8ef7;
+            --font-num: 'JetBrains Mono', monospace;
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 217, 126, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 217, 126, 0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0 36px;
+        }
+        .logo-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--green);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .logo-text {
+            font-family: var(--font-head);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .logo-text span {
+            color: var(--green);
+        }
+        header p {
+            font-size: 14px;
+            color: var(--muted);
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+            overflow-x: auto;
+        }
+        .tab {
+            padding: 14px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-family: var(--font-body);
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+        .tab:hover {
+            color: var(--text);
+        }
+        .tab.active {
+            color: var(--green);
+            border-bottom-color: var(--green);
+        }
+
+        .card-body {
+            padding: 28px;
+        }
+        @media (max-width: 600px) {
+            .card-body {
+                padding: 20px 16px;
+            }
+        }
+
+        .pair-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 28px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .pair-btn {
+            padding: 8px 4px;
+            text-align: center;
+            font-family: var(--font-num);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--muted);
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            letter-spacing: 0.03em;
+        }
+        .pair-btn:hover {
+            color: var(--text);
+            border-color: var(--border2);
+        }
+        .pair-btn.active {
+            color: var(--green);
+            background: var(--green-dim);
+            border-color: var(--green);
+            font-weight: 700;
+        }
+        .pair-sub {
+            font-size: 9px;
+            color: var(--muted2);
+            display: block;
+            margin-top: 2px;
+            font-family: var(--font-body);
+        }
+
+        .search-wrap {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        .search-wrap input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px 10px 38px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            font-family: var(--font-body);
+            transition: border-color 0.2s;
+        }
+        .search-wrap input::placeholder {
+            color: var(--muted2);
+        }
+        .search-wrap input:focus {
+            border-color: var(--green);
+        }
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        @media (max-width: 600px) {
+            .inputs-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 400px) {
+            .inputs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .field input,
+        .field select {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 11px 14px;
+            color: var(--text);
+            font-family: var(--font-num);
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+        }
+        .field input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px var(--green-glow);
+        }
+        .field-note {
+            font-size: 11px;
+            color: var(--muted2);
+            margin-top: 6px;
+        }
+
+        .risk-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .risk-row input[type=range] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 4px;
+            background: var(--surface3);
+            border-radius: 2px;
+            border: none;
+            padding: 0;
+        }
+        .risk-row input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--green);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--green-glow);
+        }
+        .risk-val {
+            font-family: var(--font-num);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--green);
+            min-width: 44px;
+            text-align: right;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 4px 0 28px;
+        }
+
+        .result-section {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .result-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+        .result-lot {
+            font-family: var(--font-num);
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--green);
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+        @media (max-width: 500px) {
+            .result-lot {
+                font-size: 52px;
+            }
+        }
+        .result-lot-unit {
+            font-size: 18px;
+            color: var(--muted);
+            font-weight: 400;
+            margin-left: 4px;
+        }
+        .selected-pair-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 14px;
+            background: var(--green-dim);
+            border: 1px solid rgba(0, 217, 126, 0.3);
+            border-radius: 20px;
+            font-family: var(--font-num);
+            font-size: 13px;
+            color: var(--green);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 560px) {
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .stat {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 12px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+        .stat-val {
+            font-family: var(--font-num);
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .stat-val.green {
+            color: var(--green);
+        }
+        .stat-val.amber {
+            color: var(--amber);
+        }
+        .stat-val.blue {
+            color: var(--blue);
+        }
+        .stat-val.red {
+            color: var(--red);
+        }
+
+        .formula-box {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 18px;
+        }
+        .formula-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+        .formula-eq {
+            font-family: var(--font-num);
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+        .formula-eq .hl {
+            color: var(--green);
+        }
+        .formula-eq .eq {
+            color: var(--text);
+        }
+
+        .warning {
+            display: none;
+            background: rgba(245, 166, 35, 0.1);
+            border: 1px solid rgba(245, 166, 35, 0.3);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--amber);
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 10px;
+        }
+        .warning.show {
+            display: flex;
+        }
+        .warning svg {
+            flex-shrink: 0;
+        }
+
+        .history-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .history-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .history-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        .clear-btn {
+            font-size: 12px;
+            color: var(--muted2);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-body);
+            transition: color 0.2s;
+        }
+        .clear-btn:hover {
+            color: var(--red);
+        }
+        .history-list {
+            padding: 8px;
+        }
+        .history-empty {
+            padding: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted2);
+        }
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-radius: 10px;
+            transition: background 0.15s;
+        }
+        .history-item:hover {
+            background: var(--surface2);
+        }
+        .h-pair {
+            font-family: var(--font-num);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            min-width: 80px;
+        }
+        .h-details {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: var(--font-body);
+        }
+        .h-lot {
+            font-family: var(--font-num);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--green);
+        }
+        .h-risk {
+            font-family: var(--font-num);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .pip-override {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .pip-override label {
+            font-size: 12px;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+        .pip-override input {
+            width: 80px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 10px;
+            color: var(--green);
+            font-family: var(--font-num);
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .pip-override input:focus {
+            border-color: var(--green);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: var(--muted2);
+            line-height: 1.8;
+        }
+        footer strong {
+            color: var(--muted);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--surface3);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page">
+
+        <header>
+            <div class="logo-mark">
+                <div class="logo-icon">📐</div>
+                <div class="logo-text">Lot<span>Calc</span> Pro</div>
+            </div>
+            <p>Forex · Metals · Crypto — Position Size Calculator</p>
+        </header>
+
+        <div class="card">
+            <!-- Category Tabs -->
+            <div class="tabs" id="tabBar">
+                <button class="tab active" data-category="Majors">Majors</button>
+                <button class="tab" data-category="Minors">Minors</button>
+                <button class="tab" data-category="Metals">Metals</button>
+                <button class="tab" data-category="Crypto">Crypto</button>
+                <button class="tab" data-category="Exotic">Exotic</button>
+            </div>
+
+            <div class="card-body">
+
+                <!-- Search -->
+                <div class="search-wrap">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="pairSearch" placeholder="Search any pair — e.g. EURUSD, BTCUSD, GOLD..."
+                    oninput="filterPairs()" />
+                </div>
+
+                <!-- Pair Grid -->
+                <div class="pair-grid" id="pairGrid"></div>
+
+                <!-- Inputs -->
+                <div class="inputs-grid">
+                    <div class="field">
+                        <label>Account Balance ($)</label>
+                        <input type="number" id="balance" value="2500" min="1" oninput="calc()" />
+                        <div class="field-note">Your funded account</div>
+                    </div>
+                    <div class="field">
+                        <label>Risk (%)</label>
+                        <div class="risk-row">
+                            <input type="range" id="riskSlider" min="0.1" max="5" step="0.1" value="1"
+                            oninput="syncRiskFromSlider(this.value)" />
+                            <span class="risk-val" id="riskDisplay">1.0%</span>
+                        </div>
+                        <input type="number" id="riskPct" value="1" min="0.1" max="10" step="0.1" style="margin-top:8px"
+                        oninput="syncRiskFromInput(this.value)" />
+                    </div>
+                    <div class="field">
+                        <label>Stop Loss (pips)</label>
+                        <input type="number" id="slPips" value="20" min="1" oninput="calc()" />
+                        <div class="field-note">From your chart</div>
+                    </div>
+                </div>
+
+                <!-- Warning -->
+                <div class="warning" id="warning">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <span id="warningText"></span>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Main Result -->
+                <div class="result-section">
+                    <div class="result-label">Lot Size</div>
+                    <div class="result-lot" id="lotDisplay">0.13<span class="result-lot-unit">lots</span></div>
+                    <div class="selected-pair-badge" id="pairBadge">EURUSD</div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Risk $</div>
+                        <div class="stat-val amber" id="riskAmt">$25.00</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">1:2 Target</div>
+                        <div class="stat-val blue" id="t2">$50.00</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">1:3 Target</div>
+                        <div class="stat-val green" id="t3">$75.00</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Pip Value</div>
+                        <div class="stat-val" id="pipValDisplay" style="color:var(--text)">$10.00</div>
+                    </div>
+                </div>
+
+                <!-- Pip override -->
+                <div class="pip-override">
+                    <label>Override pip value ($/pip/lot):</label>
+                    <input type="number" id="pipOverride" placeholder="Auto" step="0.01" oninput="calc()" />
+                    <span style="font-size:12px;color:var(--muted2)">Leave blank for auto</span>
+                </div>
+
+                <!-- Formula -->
+                <div class="formula-box" style="margin-top:16px">
+                    <div class="formula-title">How it's calculated</div>
+                    <div class="formula-eq" id="formulaLine">
+                        Lot Size = <span class="hl">Risk $</span> ÷ (SL pips × pip value per lot)<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="eq" id="fCalc">$25 ÷ (20 × $10)
+                            = <strong style="color:var(--green)">0.13 lots</strong></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="history-card">
+            <div class="history-header">
+                <div class="history-title">📋 Calculation History</div>
+                <button class="clear-btn" onclick="clearHistory()">Clear all</button>
+            </div>
+            <div class="history-list" id="historyList">
+                <div class="history-empty" id="historyEmpty">No calculations yet — start entering values above.</div>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Pip values are approximate</strong> and may differ slightly between brokers.</p>
+            <p>Crypto pip values vary greatly — always verify with your broker's contract specs.</p>
+            <p style="margin-top:8px">Built for Goat Funded account · 1% risk = $25 max on $2,500</p>
+        </footer>
+
+    </div>
+
+    <script>
+        (function() {
+            // ─────────────────────────────────────
+            // DATA
+            // ─────────────────────────────────────
+            const PAIRS = {
+                Majors: [
+                    { symbol: "EURUSD", pipVal: 10 },
+                    { symbol: "GBPUSD", pipVal: 10 },
+                    { symbol: "USDJPY", pipVal: 9.09 },
+                    { symbol: "USDCHF", pipVal: 10 },
+                    { symbol: "USDCAD", pipVal: 10 },
+                    { symbol: "AUDUSD", pipVal: 10 },
+                    { symbol: "NZDUSD", pipVal: 10 },
+                ],
+                Minors: [
+                    { symbol: "EURJPY", pipVal: 9.09 },
+                    { symbol: "GBPJPY", pipVal: 9.09 },
+                    { symbol: "AUDJPY", pipVal: 9.09 },
+                    { symbol: "CADJPY", pipVal: 9.09 },
+                    { symbol: "CHFJPY", pipVal: 9.09 },
+                    { symbol: "NZDJPY", pipVal: 9.09 },
+                    { symbol: "EURGBP", pipVal: 12.70 },
+                    { symbol: "GBPAUD", pipVal: 6.50 },
+                    { symbol: "EURAUD", pipVal: 6.50 },
+                    { symbol: "GBPCAD", pipVal: 7.40 },
+                    { symbol: "EURCAD", pipVal: 7.40 },
+                    { symbol: "GBPCHF", pipVal: 11.20 },
+                    { symbol: "EURCHF", pipVal: 11.20 },
+                    { symbol: "GBPNZD", pipVal: 6.20 },
+                    { symbol: "EURNZD", pipVal: 6.20 },
+                    { symbol: "AUDCAD", pipVal: 7.40 },
+                    { symbol: "AUDCHF", pipVal: 11.20 },
+                    { symbol: "AUDNZD", pipVal: 6.20 },
+                    { symbol: "NZDCAD", pipVal: 7.40 },
+                    { symbol: "CADCHF", pipVal: 11.20 },
+                ],
+                Metals: [
+                    { symbol: "XAUUSD", pipVal: 10, note: "Gold" },
+                    { symbol: "XAGUSD", pipVal: 5, note: "Silver" },
+                    { symbol: "XPTUSD", pipVal: 10, note: "Platinum" },
+                    { symbol: "XPDUSD", pipVal: 10, note: "Palladium" },
+                ],
+                Crypto: [
+                    { symbol: "BTCUSD", pipVal: 1, note: "Bitcoin" },
+                    { symbol: "ETHUSD", pipVal: 0.10, note: "Ethereum" },
+                    { symbol: "LTCUSD", pipVal: 0.01, note: "Litecoin" },
+                    { symbol: "XRPUSD", pipVal: 0.001, note: "Ripple" },
+                    { symbol: "BNBUSD", pipVal: 0.10, note: "BNB" },
+                    { symbol: "SOLUSD", pipVal: 0.01, note: "Solana" },
+                    { symbol: "ADAUSD", pipVal: 0.001, note: "Cardano" },
+                    { symbol: "DOTUSD", pipVal: 0.01, note: "Polkadot" },
+                    { symbol: "AVAXUSD", pipVal: 0.01, note: "Avalanche" },
+                    { symbol: "MATICUSD", pipVal: 0.001, note: "Polygon" },
+                    { symbol: "LNKUSD", pipVal: 0.01, note: "Chainlink" },
+                    { symbol: "DOGEUSD", pipVal: 0.0001, note: "Dogecoin" },
+                ],
+                Exotic: [
+                    { symbol: "USDZAR", pipVal: 0.55, note: "S.Africa Rand" },
+                    { symbol: "USDMXN", pipVal: 0.50, note: "Mexico Peso" },
+                    { symbol: "USDTRY", pipVal: 0.30, note: "Turkish Lira" },
+                    { symbol: "USDSEK", pipVal: 0.95, note: "Swedish Krona" },
+                    { symbol: "USDNOK", pipVal: 0.92, note: "Norwegian Kr" },
+                    { symbol: "USDDKK", pipVal: 1.45, note: "Danish Krone" },
+                    { symbol: "USDSGD", pipVal: 7.50, note: "Singapore $" },
+                    { symbol: "USDHKD", pipVal: 1.28, note: "HK Dollar" },
+                    { symbol: "USDCNH", pipVal: 1.38, note: "China Yuan" },
+                    { symbol: "USDINR", pipVal: 0.12, note: "Indian Rupee" },
+                    { symbol: "EURPLN", pipVal: 2.50, note: "Polish Zloty" },
+                    { symbol: "USDCZK", pipVal: 0.44, note: "Czech Koruna" },
+                    { symbol: "USDHUF", pipVal: 0.028, note: "Hungarian Ft" },
+                ],
+            };
+
+            // ─────────────────────────────────────
+            // STATE
+            // ─────────────────────────────────────
+            let currentCategory = 'Majors';
+            let selectedPair = PAIRS.Majors[0]; // EURUSD
+            let history = [];
+            let historyTimer = null;
+
+            // ─────────────────────────────────────
+            // DOM REFS
+            // ─────────────────────────────────────
+            const tabBar = document.getElementById('tabBar');
+            const pairGrid = document.getElementById('pairGrid');
+            const pairSearch = document.getElementById('pairSearch');
+            const balanceInput = document.getElementById('balance');
+            const riskSlider = document.getElementById('riskSlider');
+            const riskPctInput = document.getElementById('riskPct');
+            const riskDisplay = document.getElementById('riskDisplay');
+            const slPipsInput = document.getElementById('slPips');
+            const pipOverrideInput = document.getElementById('pipOverride');
+            const lotDisplay = document.getElementById('lotDisplay');
+            const pairBadge = document.getElementById('pairBadge');
+            const riskAmtEl = document.getElementById('riskAmt');
+            const t2El = document.getElementById('t2');
+            const t3El = document.getElementById('t3');
+            const pipValDisplay = document.getElementById('pipValDisplay');
+            const fCalcEl = document.getElementById('fCalc');
+            const warningEl = document.getElementById('warning');
+            const warningText = document.getElementById('warningText');
+            const historyList = document.getElementById('historyList');
+            const historyEmpty = document.getElementById('historyEmpty');
+
+            // ─────────────────────────────────────
+            // TAB SWITCHING (event delegation)
+            // ─────────────────────────────────────
+            tabBar.addEventListener('click', function(e) {
+                const tab = e.target.closest('.tab');
+                if (!tab) return;
+                const cat = tab.getAttribute('data-category');
+                if (!cat || cat === currentCategory) return;
+                setCategory(cat);
+            });
+
+            function setCategory(cat) {
+                currentCategory = cat;
+
+                // Update active tab styling
+                const tabs = tabBar.querySelectorAll('.tab');
+                tabs.forEach(t => t.classList.remove('active'));
+                const activeTab = tabBar.querySelector(`.tab[data-category="${cat}"]`);
+                if (activeTab) activeTab.classList.add('active');
+
+                // Clear search
+                pairSearch.value = '';
+
+                // Auto-select first pair in the new category
+                if (PAIRS[cat] && PAIRS[cat].length > 0) {
+                    selectedPair = PAIRS[cat][0];
+                }
+                // Clear pip override so auto pip value is used
+                pipOverrideInput.value = '';
+
+                // Re-render grid for the new category
+                renderGrid();
+                // Recalculate with new pair
+                calc();
+            }
+
+            // ─────────────────────────────────────
+            // RENDER PAIR GRID
+            // ─────────────────────────────────────
+            function renderGrid(filter = '') {
+                let source = [];
+
+                if (filter) {
+                    // Search across ALL categories
+                    Object.values(PAIRS).forEach(arr => {
+                        arr.forEach(p => {
+                            const sym = p.symbol.toLowerCase();
+                            const note = (p.note || '').toLowerCase();
+                            const q = filter.toLowerCase();
+                            if (sym.includes(q) || note.includes(q)) {
+                                // Avoid duplicates (same symbol in multiple categories)
+                                if (!source.find(existing => existing.symbol === p.symbol)) {
+                                    source.push(p);
+                                }
+                            }
+                        });
+                    });
+                } else {
+                    source = PAIRS[currentCategory] || [];
+                }
+
+                pairGrid.innerHTML = source.map(p => {
+                    const isActive = p.symbol === selectedPair.symbol;
+                    return `
+                <button class="pair-btn ${isActive ? 'active' : ''}"
+                  data-symbol="${p.symbol}">
+                  ${p.symbol}
+                  ${p.note ? `<span class="pair-sub">${p.note}</span>` : ''}
+                </button>
+              `;
+                }).join('');
+            }
+
+            // ─────────────────────────────────────
+            // FILTER PAIRS (search)
+            // ─────────────────────────────────────
+            function filterPairs() {
+                const q = pairSearch.value.trim();
+                renderGrid(q);
+            }
+
+            // Expose to inline handler
+            window.filterPairs = filterPairs;
+
+            // ─────────────────────────────────────
+            // SELECT PAIR (event delegation on grid)
+            // ─────────────────────────────────────
+            pairGrid.addEventListener('click', function(e) {
+                const btn = e.target.closest('.pair-btn');
+                if (!btn) return;
+                const sym = btn.getAttribute('data-symbol');
+                if (!sym) return;
+                selectPair(sym);
+            });
+
+            function selectPair(sym) {
+                let found = null;
+                // Search across all categories
+                Object.values(PAIRS).forEach(arr => {
+                    arr.forEach(p => {
+                        if (p.symbol === sym) found = p;
+                    });
+                });
+                if (found) {
+                    selectedPair = found;
+                    // Clear manual override so auto pip value kicks in
+                    pipOverrideInput.value = '';
+                    // Re-render to highlight the newly selected pair
+                    renderGrid(pairSearch.value.trim());
+                    // Recalculate
+                    calc();
+                }
+            }
+
+            // ─────────────────────────────────────
+            // RISK SYNC
+            // ─────────────────────────────────────
+            function syncRiskFromSlider(val) {
+                const v = parseFloat(val) || 1;
+                const clamped = Math.min(Math.max(v, 0.1), 5);
+                riskPctInput.value = clamped;
+                riskDisplay.textContent = clamped.toFixed(1) + '%';
+                calc();
+            }
+
+            function syncRiskFromInput(val) {
+                const v = parseFloat(val) || 1;
+                const clamped = Math.min(Math.max(v, 0.1), 10);
+                riskSlider.value = Math.min(clamped, 5);
+                riskDisplay.textContent = clamped.toFixed(1) + '%';
+                calc();
+            }
+
+            // Expose to inline handlers
+            window.syncRiskFromSlider = syncRiskFromSlider;
+            window.syncRiskFromInput = syncRiskFromInput;
+
+            // ─────────────────────────────────────
+            // MAIN CALCULATION
+            // ─────────────────────────────────────
+            function calc() {
+                const balance = parseFloat(balanceInput.value) || 0;
+                const riskPct = parseFloat(riskPctInput.value) || 0;
+                const slPips = parseFloat(slPipsInput.value) || 1;
+                const overrideVal = pipOverrideInput.value.trim();
+                const pipVal = overrideVal ? parseFloat(overrideVal) : (selectedPair ? selectedPair.pipVal : 10);
+
+                const riskAmt = (balance * riskPct) / 100;
+                const lotSize = riskAmt / (slPips * pipVal);
+                const t2 = riskAmt * 2;
+                const t3 = riskAmt * 3;
+
+                // Update main lot display
+                lotDisplay.innerHTML =
+                    lotSize.toFixed(2) + '<span class="result-lot-unit">lots</span>';
+
+                // Update pair badge
+                if (selectedPair) {
+                    pairBadge.textContent = selectedPair.symbol + (selectedPair.note ? ' · ' + selectedPair
+                        .note : '');
+                }
+
+                // Update stats
+                riskAmtEl.textContent = '$' + riskAmt.toFixed(2);
+                t2El.textContent = '$' + t2.toFixed(2);
+                t3El.textContent = '$' + t3.toFixed(2);
+                pipValDisplay.textContent = '$' + pipVal.toFixed(4);
+
+                // Update formula
+                fCalcEl.innerHTML =
+                    `$${riskAmt.toFixed(2)} ÷ (${slPips} × $${pipVal.toFixed(4)}) = <strong style="color:var(--green)">${lotSize.toFixed(2)} lots</strong>`;
+
+                // Warnings
+                if (riskAmt > 100) {
+                    warningEl.className = 'warning show';
+                    warningText.textContent =
+                        `Risk $${riskAmt.toFixed(2)} exceeds your $100 max drawdown in ONE trade! Reduce risk%.`;
+                } else if (riskAmt > 33) {
+                    warningEl.className = 'warning show';
+                    warningText.textContent =
+                        `Risk $${riskAmt.toFixed(2)} is over the recommended $30 daily cap. Be careful.`;
+                } else {
+                    warningEl.className = 'warning';
+                }
+
+                // Debounce history save
+                addHistory({
+                    pair: selectedPair ? selectedPair.symbol : 'N/A',
+                    lot: lotSize.toFixed(2),
+                    risk: riskAmt.toFixed(2),
+                    sl: slPips,
+                    balance: balance
+                });
+            }
+
+            // Expose calc to inline handlers
+            window.calc = calc;
+
+            // ─────────────────────────────────────
+            // HISTORY
+            // ─────────────────────────────────────
+            function addHistory(entry) {
+                clearTimeout(historyTimer);
+                historyTimer = setTimeout(() => {
+                    // Avoid duplicate consecutive entries
+                    if (history.length > 0 &&
+                        history[0].pair === entry.pair &&
+                        history[0].lot === entry.lot &&
+                        history[0].risk === entry.risk &&
+                        history[0].sl === entry.sl &&
+                        history[0].balance === entry.balance) {
+                        return;
+                    }
+                    history.unshift({
+                        ...entry,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',
+                            second: '2-digit' })
+                    });
+                    // Keep max 10 entries
+                    if (history.length > 10) history.pop();
+                    renderHistory();
+                }, 600);
+            }
+
+            function renderHistory() {
+                if (!history.length) {
+                    historyList.innerHTML =
+                        '<div class="history-empty">No calculations yet — start entering values above.</div>';
+                    return;
+                }
+                historyList.innerHTML = history.map(h => `
+              <div class="history-item">
+                <div>
+                  <div class="h-pair">${h.pair}</div>
+                  <div class="h-details">${h.sl} pips · $${h.balance.toLocaleString()} balance · ${h.time}</div>
+                </div>
+                <div style="text-align:right">
+                  <div class="h-lot">${h.lot} lots</div>
+                  <div class="h-risk">Risk: $${h.risk}</div>
+                </div>
+              </div>
+            `).join('');
+            }
+
+            function clearHistory() {
+                history = [];
+                renderHistory();
+            }
+
+            // Expose clearHistory to inline handler
+            window.clearHistory = clearHistory;
+
+            // ─────────────────────────────────────
+            // INIT
+            // ─────────────────────────────────────
+            function init() {
+                renderGrid();
+                calc();
+            }
+
+            // Run on DOM ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+</html>
