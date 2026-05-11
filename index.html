@@ -1,1083 +1,965 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LotCalc Pro — Forex & Crypto Position Sizing</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
-        rel="stylesheet">
-    <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --bg: #080c14;
-            --surface: #0e1420;
-            --surface2: #141a28;
-            --surface3: #1c2438;
-            --border: rgba(255, 255, 255, 0.07);
-            --border2: rgba(255, 255, 255, 0.12);
-            --green: #00d97e;
-            --green-dim: rgba(0, 217, 126, 0.12);
-            --green-glow: rgba(0, 217, 126, 0.25);
-            --amber: #f5a623;
-            --red: #ff4d6a;
-            --text: #e8eaf2;
-            --muted: #6b7592;
-            --muted2: #4a5270;
-            --blue: #4f8ef7;
-            --font-num: 'JetBrains Mono', monospace;
-            --font-head: 'Syne', sans-serif;
-            --font-body: 'DM Sans', sans-serif;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: var(--font-body);
-            min-height: 100vh;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(0, 217, 126, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 217, 126, 0.03) 1px, transparent 1px);
-            background-size: 48px 48px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .page {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 24px 20px 60px;
-        }
-
-        header {
-            text-align: center;
-            padding: 40px 0 36px;
-        }
-        .logo-mark {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--green);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        .logo-text {
-            font-family: var(--font-head);
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-        .logo-text span {
-            color: var(--green);
-        }
-        header p {
-            font-size: 14px;
-            color: var(--muted);
-            font-weight: 300;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-        }
-
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-            background: var(--bg);
-            overflow-x: auto;
-        }
-        .tab {
-            padding: 14px 20px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--muted);
-            cursor: pointer;
-            white-space: nowrap;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-            font-family: var(--font-body);
-            background: none;
-            border-top: none;
-            border-left: none;
-            border-right: none;
-        }
-        .tab:hover {
-            color: var(--text);
-        }
-        .tab.active {
-            color: var(--green);
-            border-bottom-color: var(--green);
-        }
-
-        .card-body {
-            padding: 28px;
-        }
-        @media (max-width: 600px) {
-            .card-body {
-                padding: 20px 16px;
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>LotCalc Pro — Forex & Crypto Position Sizing</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">
+</script>
+<script id="tailwind-config">
+tailwind.config = {
+    darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                "secondary": "#44e092",
+                "outline": "#8e90a2",
+                "inverse-primary": "#124af0",
+                "on-error-container": "#ffdad6",
+                "on-secondary-fixed-variant": "#00522f",
+                "inverse-on-surface": "#283044",
+                "secondary-container": "#03c177",
+                "on-primary-container": "#efefff",
+                "surface-bright": "#31394d",
+                "tertiary": "#ffb3ae",
+                "secondary-fixed-dim": "#44e092",
+                "on-surface": "#dae2fd",
+                "surface-container": "#171f33",
+                "surface-tint": "#b8c3ff",
+                "surface-container-low": "#131b2e",
+                "surface-container-lowest": "#060e20",
+                "on-tertiary-fixed": "#410004",
+                "on-error": "#690005",
+                "secondary-fixed": "#66fdac",
+                "tertiary-fixed-dim": "#ffb3ae",
+                "surface-container-high": "#222a3d",
+                "background": "#0b1326",
+                "on-primary-fixed": "#001356",
+                "on-surface-variant": "#c4c5d9",
+                "on-tertiary-container": "#ffecea",
+                "on-tertiary": "#68000b",
+                "error-container": "#93000a",
+                "primary": "#b8c3ff",
+                "on-primary-fixed-variant": "#0035be",
+                "surface-container-highest": "#2d3449",
+                "surface-dim": "#0b1326",
+                "on-secondary-container": "#004729",
+                "primary-fixed": "#dde1ff",
+                "surface-variant": "#2d3449",
+                "on-secondary": "#00391f",
+                "surface": "#0b1326",
+                "primary-container": "#2e5bff",
+                "error": "#ffb4ab",
+                "primary-fixed-dim": "#b8c3ff",
+                "on-background": "#dae2fd",
+                "inverse-surface": "#dae2fd",
+                "on-secondary-fixed": "#002110",
+                "outline-variant": "#434656",
+                "on-primary": "#002388",
+                "on-tertiary-fixed-variant": "#930014",
+                "tertiary-fixed": "#ffdad7",
+                "tertiary-container": "#d02a30"
+            },
+            borderRadius: {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            spacing: {
+                "lg": "24px",
+                "gutter": "16px",
+                "sm": "8px",
+                "xl": "40px",
+                "unit": "4px",
+                "md": "16px",
+                "xs": "4px",
+                "container-max": "1440px"
+            },
+            fontFamily: {
+                "body-md": ["Inter"],
+                "headline-md-mobile": ["Hanken Grotesk"],
+                "display-lg": ["Hanken Grotesk"],
+                "data-lg": ["Inter"],
+                "label-sm": ["JetBrains Mono"],
+                "headline-md": ["Hanken Grotesk"]
+            },
+            fontSize: {
+                "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                "headline-md-mobile": ["20px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                "data-lg": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                "headline-md": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }]
             }
         }
-
-        .pair-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 8px;
-            margin-bottom: 28px;
-            max-height: 180px;
-            overflow-y: auto;
-        }
-        .pair-btn {
-            padding: 8px 4px;
-            text-align: center;
-            font-family: var(--font-num);
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--muted);
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.15s;
-            letter-spacing: 0.03em;
-        }
-        .pair-btn:hover {
-            color: var(--text);
-            border-color: var(--border2);
-        }
-        .pair-btn.active {
-            color: var(--green);
-            background: var(--green-dim);
-            border-color: var(--green);
-            font-weight: 700;
-        }
-        .pair-sub {
-            font-size: 9px;
-            color: var(--muted2);
-            display: block;
-            margin-top: 2px;
-            font-family: var(--font-body);
-        }
-
-        .search-wrap {
-            position: relative;
-            margin-bottom: 16px;
-        }
-        .search-wrap input {
-            width: 100%;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 10px 14px 10px 38px;
-            color: var(--text);
-            font-size: 14px;
-            outline: none;
-            font-family: var(--font-body);
-            transition: border-color 0.2s;
-        }
-        .search-wrap input::placeholder {
-            color: var(--muted2);
-        }
-        .search-wrap input:focus {
-            border-color: var(--green);
-        }
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--muted);
-            font-size: 16px;
-            pointer-events: none;
-        }
-
-        .inputs-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 28px;
-        }
-        @media (max-width: 600px) {
-            .inputs-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        @media (max-width: 400px) {
-            .inputs-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .field label {
-            display: block;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--muted);
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .field input,
-        .field select {
-            width: 100%;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 11px 14px;
-            color: var(--text);
-            font-family: var(--font-num);
-            font-size: 16px;
-            font-weight: 500;
-            outline: none;
-            transition: border-color 0.2s;
-            -webkit-appearance: none;
-        }
-        .field input:focus {
-            border-color: var(--green);
-            box-shadow: 0 0 0 3px var(--green-glow);
-        }
-        .field-note {
-            font-size: 11px;
-            color: var(--muted2);
-            margin-top: 6px;
-        }
-
-        .risk-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .risk-row input[type=range] {
-            flex: 1;
-            -webkit-appearance: none;
-            height: 4px;
-            background: var(--surface3);
-            border-radius: 2px;
-            border: none;
-            padding: 0;
-        }
-        .risk-row input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            background: var(--green);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 8px var(--green-glow);
-        }
-        .risk-val {
-            font-family: var(--font-num);
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--green);
-            min-width: 44px;
-            text-align: right;
-        }
-
-        .divider {
-            height: 1px;
-            background: var(--border);
-            margin: 4px 0 28px;
-        }
-
-        .result-section {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-        .result-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
-        .result-lot {
-            font-family: var(--font-num);
-            font-size: 72px;
-            font-weight: 700;
-            color: var(--green);
-            line-height: 1;
-            letter-spacing: -2px;
-        }
-        @media (max-width: 500px) {
-            .result-lot {
-                font-size: 52px;
-            }
-        }
-        .result-lot-unit {
-            font-size: 18px;
-            color: var(--muted);
-            font-weight: 400;
-            margin-left: 4px;
-        }
-        .selected-pair-badge {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 4px 14px;
-            background: var(--green-dim);
-            border: 1px solid rgba(0, 217, 126, 0.3);
-            border-radius: 20px;
-            font-family: var(--font-num);
-            font-size: 13px;
-            color: var(--green);
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        @media (max-width: 560px) {
-            .stats {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .stat {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 12px;
-            text-align: center;
-        }
-        .stat-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--muted);
-            margin-bottom: 6px;
-        }
-        .stat-val {
-            font-family: var(--font-num);
-            font-size: 18px;
-            font-weight: 700;
-        }
-        .stat-val.green {
-            color: var(--green);
-        }
-        .stat-val.amber {
-            color: var(--amber);
-        }
-        .stat-val.blue {
-            color: var(--blue);
-        }
-        .stat-val.red {
-            color: var(--red);
-        }
-
-        .formula-box {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px 18px;
-        }
-        .formula-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--muted);
-            margin-bottom: 10px;
-        }
-        .formula-eq {
-            font-family: var(--font-num);
-            font-size: 13px;
-            color: var(--muted);
-            line-height: 1.8;
-        }
-        .formula-eq .hl {
-            color: var(--green);
-        }
-        .formula-eq .eq {
-            color: var(--text);
-        }
-
-        .warning {
-            display: none;
-            background: rgba(245, 166, 35, 0.1);
-            border: 1px solid rgba(245, 166, 35, 0.3);
-            border-radius: 10px;
-            padding: 12px 16px;
-            font-size: 13px;
-            color: var(--amber);
-            margin-bottom: 16px;
-            align-items: center;
-            gap: 10px;
-        }
-        .warning.show {
-            display: flex;
-        }
-        .warning svg {
-            flex-shrink: 0;
-        }
-
-        .history-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        .history-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .history-title {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-        .clear-btn {
-            font-size: 12px;
-            color: var(--muted2);
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-family: var(--font-body);
-            transition: color 0.2s;
-        }
-        .clear-btn:hover {
-            color: var(--red);
-        }
-        .history-list {
-            padding: 8px;
-        }
-        .history-empty {
-            padding: 24px;
-            text-align: center;
-            font-size: 13px;
-            color: var(--muted2);
-        }
-        .history-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 16px;
-            border-radius: 10px;
-            transition: background 0.15s;
-        }
-        .history-item:hover {
-            background: var(--surface2);
-        }
-        .h-pair {
-            font-family: var(--font-num);
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text);
-            min-width: 80px;
-        }
-        .h-details {
-            font-size: 12px;
-            color: var(--muted);
-            font-family: var(--font-body);
-        }
-        .h-lot {
-            font-family: var(--font-num);
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--green);
-        }
-        .h-risk {
-            font-family: var(--font-num);
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .pip-override {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-        .pip-override label {
-            font-size: 12px;
-            color: var(--muted);
-            flex-shrink: 0;
-        }
-        .pip-override input {
-            width: 80px;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 6px 10px;
-            color: var(--green);
-            font-family: var(--font-num);
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .pip-override input:focus {
-            border-color: var(--green);
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
-            color: var(--muted2);
-            line-height: 1.8;
-        }
-        footer strong {
-            color: var(--muted);
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--surface3);
-            border-radius: 2px;
-        }
-    </style>
+    }
+}
+</script>
+<style>
+    body { min-height: max(884px, 100dvh); background-color: #0b1326; color: #dae2fd; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .screen { display: none; }
+    .screen.active { display: flex; flex-direction: column; }
+    .glass-card {
+        background: rgba(22, 27, 38, 0.6);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-result {
+        background: rgba(34, 42, 61, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .top-highlight::before {
+        content: '';
+        position: absolute;
+        inset-x: 0;
+        top: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+        pointer-events: none;
+    }
+    .nav-icon { font-variation-settings: 'FILL' 0; }
+    .nav-icon.active-icon { font-variation-settings: 'FILL' 1; color: #44e092; }
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(68, 224, 146, 0.4); }
+        50% { box-shadow: 0 0 0 12px rgba(68, 224, 146, 0); }
+    }
+    .pulse-glow { animation: pulse-glow 2s ease-in-out 1; }
+</style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col pb-24 md:pb-0 antialiased font-body-md">
 
-    <div class="page">
+<!-- ========== TOP APP BAR ========== -->
+<header class="bg-surface/80 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-lg py-sm max-w-container-max mx-auto">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL'1;">account_balance_wallet</span>
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-primary hidden sm:block">LotCalc Pro</h1>
+</div>
+<nav class="hidden md:flex items-center gap-md">
+<button onclick="navigateTo('calc')" class="nav-link flex items-center gap-xs px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high/50 transition-colors font-label-sm text-label-sm" data-nav="calc">
+<span class="material-symbols-outlined text-[18px]">calculate</span> Calc
+</button>
+<button onclick="navigateTo('pairs')" class="nav-link flex items-center gap-xs px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high/50 transition-colors font-label-sm text-label-sm" data-nav="pairs">
+<span class="material-symbols-outlined text-[18px]">currency_exchange</span> Pairs
+</button>
+<button onclick="navigateTo('history')" class="nav-link flex items-center gap-xs px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high/50 transition-colors font-label-sm text-label-sm" data-nav="history">
+<span class="material-symbols-outlined text-[18px]">history</span> Logs
+</button>
+<button onclick="navigateTo('settings')" class="nav-link flex items-center gap-xs px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high/50 transition-colors font-label-sm text-label-sm" data-nav="settings">
+<span class="material-symbols-outlined text-[18px]">settings</span> Settings
+</button>
+</nav>
+<div class="font-data-lg text-data-lg text-secondary bg-surface-container px-md py-xs rounded-full border border-outline-variant/20 shadow-inner" id="headerBalance">$2,500.00</div>
+</div>
+</header>
 
-        <header>
-            <div class="logo-mark">
-                <div class="logo-icon">📐</div>
-                <div class="logo-text">Lot<span>Calc</span> Pro</div>
-            </div>
-            <p>Forex · Metals · Crypto — Position Size Calculator</p>
-        </header>
+<!-- ========== MAIN CONTENT ========== -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-gutter md:px-lg py-lg">
 
-        <div class="card">
-            <!-- Category Tabs -->
-            <div class="tabs" id="tabBar">
-                <button class="tab active" data-category="Majors">Majors</button>
-                <button class="tab" data-category="Minors">Minors</button>
-                <button class="tab" data-category="Metals">Metals</button>
-                <button class="tab" data-category="Crypto">Crypto</button>
-                <button class="tab" data-category="Exotic">Exotic</button>
-            </div>
+<!-- ── CALCULATOR SCREEN ── -->
+<section class="screen active flex-col gap-lg" id="screen-calc">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-sm pb-md border-b border-outline-variant/20 gap-md">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface mb-xs">Position Size</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Calculate your optimal lot size based on risk parameters.</p>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-outline text-[20px]">tune</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Risk Calculator</span>
+</div>
+</div>
 
-            <div class="card-body">
+<!-- Input Card -->
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/10 p-lg shadow-[0px_8px_32px_rgba(6,14,32,0.5)]">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Account Balance ($)</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-sm text-outline-variant" style="font-variation-settings:'FILL'0;">attach_money</span>
+<input id="balance" class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg py-sm pl-xl pr-sm font-label-sm text-label-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" type="number" value="2500" min="1" oninput="onInputChange()"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Risk (%)</label>
+<div class="flex items-center gap-sm">
+<div class="relative flex-1 flex items-center">
+<span class="material-symbols-outlined absolute left-sm text-outline-variant" style="font-variation-settings:'FILL'0;">percent</span>
+<input id="riskPct" class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg py-sm pl-xl pr-sm font-label-sm text-label-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" type="number" value="1" min="0.1" max="10" step="0.1" oninput="syncRiskFromInput(this.value)"/>
+</div>
+</div>
+<input id="riskSlider" type="range" min="0.1" max="5" step="0.1" value="1" oninput="syncRiskFromSlider(this.value)" class="w-full h-1 bg-surface-container-highest rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-secondary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-lg"/>
+<span class="font-label-sm text-label-sm text-secondary min-w-[40px] text-right" id="riskDisplay">1.0%</span>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Stop Loss (Pips)</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-sm text-outline-variant" style="font-variation-settings:'FILL'0;">moving</span>
+<input id="slPips" class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg py-sm pl-xl pr-sm font-label-sm text-label-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" type="number" value="20" min="1" oninput="onInputChange()"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Trading Pair</label>
+<button onclick="navigateTo('pairs')" class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg py-sm px-sm font-label-sm text-label-sm text-on-surface hover:border-primary transition-colors flex items-center justify-between cursor-pointer group">
+<span class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary group-hover:text-secondary transition-colors" style="font-variation-settings:'FILL'1;">currency_exchange</span>
+<span id="calcPairDisplay" class="font-data-lg text-data-lg">EURUSD</span>
+</span>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<div class="font-label-sm text-label-sm text-outline mt-xs" id="calcPipValDisplay">Pip value: $10.00/lot</div>
+</div>
+</div>
+<button onclick="calc(true)" class="w-full mt-lg bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors duration-200 py-md rounded-lg font-headline-md text-headline-md flex items-center justify-center gap-sm active:scale-95" id="calcBtn">
+<span class="material-symbols-outlined" style="font-variation-settings:'FILL'1;">bolt</span>
+Calculate Position
+</button>
+</div>
 
-                <!-- Search -->
-                <div class="search-wrap">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" id="pairSearch" placeholder="Search any pair — e.g. EURUSD, BTCUSD, GOLD..."
-                    oninput="filterPairs()" />
-                </div>
+<!-- Warning -->
+<div id="warningBox" class="hidden bg-error-container/20 border border-error/30 rounded-xl p-md flex items-center gap-sm text-error font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+<span id="warningText"></span>
+</div>
 
-                <!-- Pair Grid -->
-                <div class="pair-grid" id="pairGrid"></div>
+<!-- Results Glass Card -->
+<div class="glass-card-result rounded-xl p-lg relative overflow-hidden flex flex-col gap-md top-highlight shadow-[0_8px_40px_rgba(0,0,0,0.5)]" id="resultsCard">
+<h2 class="font-headline-md text-headline-md text-primary mb-sm">Calculation Results</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<div class="flex flex-col gap-xs p-md bg-surface-container rounded-lg border border-outline-variant/10">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Calculated Lot Size</span>
+<span class="font-display-lg text-display-lg text-secondary" id="lotDisplay">0.13</span>
+<span class="font-label-sm text-label-sm text-outline mt-xs">Standard Lots</span>
+</div>
+<div class="flex flex-col gap-xs p-md bg-surface-container rounded-lg border border-outline-variant/10">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Total Risk Amount</span>
+<span class="font-display-lg text-display-lg text-tertiary" id="riskAmtDisplay">-$25.00</span>
+<span class="font-label-sm text-label-sm text-outline mt-xs" id="riskPctLabel">Based on 1.0% Risk</span>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-sm" id="statsRow">
+<div class="bg-surface-container/50 rounded-lg p-sm border border-outline-variant/5 text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">1:2 Target</span>
+<span class="font-data-lg text-data-lg text-primary" id="t2Display">$50.00</span>
+</div>
+<div class="bg-surface-container/50 rounded-lg p-sm border border-outline-variant/5 text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">1:3 Target</span>
+<span class="font-data-lg text-data-lg text-secondary" id="t3Display">$75.00</span>
+</div>
+<div class="bg-surface-container/50 rounded-lg p-sm border border-outline-variant/5 text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">Pip Value</span>
+<span class="font-data-lg text-data-lg text-on-surface" id="pipValStat">$10.00</span>
+</div>
+<div class="bg-surface-container/50 rounded-lg p-sm border border-outline-variant/5 text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">Pair</span>
+<span class="font-data-lg text-data-lg text-on-surface" id="pairStat">EURUSD</span>
+</div>
+</div>
+<!-- Pip Override -->
+<div class="flex items-center gap-sm flex-wrap mt-sm">
+<label class="font-label-sm text-label-sm text-outline">Override pip value ($/lot):</label>
+<input id="pipOverride" type="number" step="0.0001" placeholder="Auto" oninput="onInputChange()" class="w-24 bg-surface-container-highest border border-outline-variant/20 rounded-lg py-xs px-sm font-label-sm text-label-sm text-secondary focus:border-primary outline-none transition-colors"/>
+<span class="font-label-sm text-label-sm text-outline-variant">Leave blank for auto</span>
+</div>
+<!-- Formula -->
+<div class="bg-surface-container/40 rounded-lg p-md border border-outline-variant/5 mt-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase block mb-sm">Formula</span>
+<div class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed" id="formulaDisplay">
+Lot = <span class="text-secondary">Risk $</span> ÷ (SL pips × Pip Value) = <span class="text-on-surface font-bold" id="formulaDetail">$25 ÷ (20 × $10.00) = 0.13 lots</span>
+</div>
+</div>
+</div>
+</section>
 
-                <!-- Inputs -->
-                <div class="inputs-grid">
-                    <div class="field">
-                        <label>Account Balance ($)</label>
-                        <input type="number" id="balance" value="2500" min="1" oninput="calc()" />
-                        <div class="field-note">Your funded account</div>
-                    </div>
-                    <div class="field">
-                        <label>Risk (%)</label>
-                        <div class="risk-row">
-                            <input type="range" id="riskSlider" min="0.1" max="5" step="0.1" value="1"
-                            oninput="syncRiskFromSlider(this.value)" />
-                            <span class="risk-val" id="riskDisplay">1.0%</span>
-                        </div>
-                        <input type="number" id="riskPct" value="1" min="0.1" max="10" step="0.1" style="margin-top:8px"
-                        oninput="syncRiskFromInput(this.value)" />
-                    </div>
-                    <div class="field">
-                        <label>Stop Loss (pips)</label>
-                        <input type="number" id="slPips" value="20" min="1" oninput="calc()" />
-                        <div class="field-note">From your chart</div>
-                    </div>
-                </div>
+<!-- ── PAIRS SCREEN ── -->
+<section class="screen flex-col gap-lg" id="screen-pairs">
+<div class="flex flex-col gap-md">
+<h1 class="font-headline-md text-headline-md text-on-surface">Select Trading Pair</h1>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline-variant">search</span>
+<input id="pairSearch" class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg pl-xl pr-md py-sm font-body-md text-body-md text-on-surface placeholder:text-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-all shadow-sm" placeholder="Search any pair — e.g. EURUSD, BTCUSD, GOLD..." type="text" oninput="filterPairs()"/>
+</div>
+</div>
+<div class="flex gap-md border-b border-outline-variant/10 overflow-x-auto hide-scrollbar" id="categoryTabs">
+<button class="cat-tab px-sm py-sm border-b-2 border-primary text-primary font-body-md text-body-md whitespace-nowrap font-semibold" data-cat="Majors">Majors</button>
+<button class="cat-tab px-sm py-sm border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md whitespace-nowrap" data-cat="Minors">Minors</button>
+<button class="cat-tab px-sm py-sm border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md whitespace-nowrap" data-cat="Metals">Metals</button>
+<button class="cat-tab px-sm py-sm border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md whitespace-nowrap" data-cat="Crypto">Crypto</button>
+<button class="cat-tab px-sm py-sm border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md whitespace-nowrap" data-cat="Exotic">Exotic</button>
+</div>
+<div class="flex flex-col border border-outline-variant/10 rounded-xl bg-surface-container-lowest overflow-hidden shadow-sm max-h-[500px] overflow-y-auto" id="pairsList"></div>
+</section>
 
-                <!-- Warning -->
-                <div class="warning" id="warning">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                        <line x1="12" y1="9" x2="12" y2="13" />
-                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                    </svg>
-                    <span id="warningText"></span>
-                </div>
+<!-- ── HISTORY SCREEN ── -->
+<section class="screen flex-col gap-lg" id="screen-history">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-sm pb-md border-b border-outline-variant/20 gap-md">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface mb-xs">Calculation History</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Review and reuse parameters from previous risk management calculations.</p>
+</div>
+<button onclick="clearHistory()" class="bg-surface-container-highest px-md py-sm rounded-lg border border-outline-variant/10 inline-flex items-center gap-sm hover:border-error/30 hover:text-error transition-colors font-label-sm text-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">delete_sweep</span> Clear All
+</button>
+</div>
+<div id="historyContent">
+<div class="text-center py-xl text-on-surface-variant font-body-md" id="historyEmpty">No calculations yet — start calculating above.</div>
+</div>
+</section>
 
-                <div class="divider"></div>
+<!-- ── SETTINGS SCREEN ── -->
+<section class="screen flex-col gap-xl" id="screen-settings">
+<section class="relative glass-card rounded-xl p-lg flex items-center gap-md overflow-hidden top-highlight shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+<div class="w-16 h-16 rounded-full bg-surface-dim border border-outline-variant/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-size:32px;">person</span>
+</div>
+<div class="flex-1 flex flex-col">
+<h1 class="font-headline-md text-headline-md text-on-background">System User</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-[14px]">trader@lotcalc.pro</p>
+</div>
+<div class="shrink-0">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container/20 text-secondary font-label-sm text-label-sm tracking-widest border border-secondary/20">Pro</span>
+</div>
+</section>
+<section class="flex flex-col gap-sm">
+<h2 class="font-label-sm text-label-sm text-outline tracking-widest uppercase pl-xs">Trading Parameters</h2>
+<div class="glass-card rounded-xl divide-y divide-white/5 shadow-[0_4px_24px_rgba(0,0,0,0.3)] top-highlight relative overflow-hidden">
+<div class="flex items-center justify-between p-lg hover:bg-white/[0.02] transition-colors">
+<div class="flex flex-col">
+<span class="font-data-lg text-data-lg text-on-background text-[18px]">Default Risk</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px]">Base percentage per position</span>
+</div>
+<div class="relative w-28">
+<input id="defaultRisk" class="w-full bg-surface-dim border border-outline-variant/30 rounded py-2 pl-3 pr-8 font-label-sm text-label-sm text-on-background text-right focus:border-inverse-primary focus:ring-1 focus:ring-inverse-primary transition-colors outline-none" step="0.25" type="number" value="1.00" onchange="saveSettings()"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-outline">%</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-lg hover:bg-white/[0.02] transition-colors">
+<div class="flex flex-col">
+<span class="font-data-lg text-data-lg text-on-background text-[18px]">Base Currency</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px]">Account denomination</span>
+</div>
+<div class="relative w-28">
+<select id="baseCurrency" class="w-full appearance-none bg-surface-dim border border-outline-variant/30 rounded py-2 pl-3 pr-8 font-label-sm text-label-sm text-on-background focus:border-inverse-primary focus:ring-1 focus:ring-inverse-primary transition-colors outline-none cursor-pointer" onchange="saveSettings()">
+<option value="USD">USD</option>
+<option value="EUR">EUR</option>
+<option value="GBP">GBP</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline pointer-events-none" style="font-size:18px;">expand_more</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-lg hover:bg-white/[0.02] transition-colors">
+<div class="flex flex-col">
+<span class="font-data-lg text-data-lg text-on-background text-[18px]">Pip Calculation</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-[13px]">Method for cross-pairs</span>
+</div>
+<div class="relative w-36">
+<select id="pipMethod" class="w-full appearance-none bg-surface-dim border border-outline-variant/30 rounded py-2 pl-3 pr-8 font-label-sm text-label-sm text-on-background focus:border-inverse-primary focus:ring-1 focus:ring-inverse-primary transition-colors outline-none cursor-pointer" onchange="saveSettings()">
+<option value="standard">Standard</option>
+<option value="fractional">Fractional</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline pointer-events-none" style="font-size:18px;">expand_more</span>
+</div>
+</div>
+</div>
+</section>
+<section class="flex flex-col gap-sm">
+<h2 class="font-label-sm text-label-sm text-outline tracking-widest uppercase pl-xs">System Information</h2>
+<div class="glass-card rounded-xl divide-y divide-white/5 shadow-[0_4px_24px_rgba(0,0,0,0.3)] top-highlight relative overflow-hidden">
+<button class="w-full flex items-center justify-between p-md hover:bg-white/[0.02] transition-colors group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">menu_book</span>
+<span class="font-data-lg text-data-lg text-on-background text-[16px] group-hover:text-primary transition-colors">How to use</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-md hover:bg-white/[0.02] transition-colors group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">support_agent</span>
+<span class="font-data-lg text-data-lg text-on-background text-[16px] group-hover:text-primary transition-colors">Support</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-md hover:bg-white/[0.02] transition-colors group">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">star</span>
+<span class="font-data-lg text-data-lg text-on-background text-[16px] group-hover:text-primary transition-colors">Rate App</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+</div>
+</section>
+</section>
 
-                <!-- Main Result -->
-                <div class="result-section">
-                    <div class="result-label">Lot Size</div>
-                    <div class="result-lot" id="lotDisplay">0.13<span class="result-lot-unit">lots</span></div>
-                    <div class="selected-pair-badge" id="pairBadge">EURUSD</div>
-                </div>
+</main>
 
-                <!-- Stats -->
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-label">Risk $</div>
-                        <div class="stat-val amber" id="riskAmt">$25.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">1:2 Target</div>
-                        <div class="stat-val blue" id="t2">$50.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">1:3 Target</div>
-                        <div class="stat-val green" id="t3">$75.00</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Pip Value</div>
-                        <div class="stat-val" id="pipValDisplay" style="color:var(--text)">$10.00</div>
-                    </div>
-                </div>
+<!-- ========== BOTTOM NAV (MOBILE) ========== -->
+<nav class="md:hidden bg-surface-container/90 backdrop-blur-xl border-t border-outline-variant/10 shadow-xl fixed bottom-0 left-0 w-full z-50 rounded-t-full">
+<div class="w-full flex justify-around items-center px-gutter py-sm">
+<button onclick="navigateTo('calc')" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:opacity-80 scale-90 duration-150" data-nav="calc">
+<span class="material-symbols-outlined nav-icon active-icon" id="navIcon-calc">calculate</span>
+<span class="font-label-sm text-label-sm mt-1" id="navLabel-calc">Calc</span>
+</button>
+<button onclick="navigateTo('pairs')" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:opacity-80 scale-90 duration-150" data-nav="pairs">
+<span class="material-symbols-outlined nav-icon" id="navIcon-pairs">currency_exchange</span>
+<span class="font-label-sm text-label-sm mt-1" id="navLabel-pairs">Pairs</span>
+</button>
+<button onclick="navigateTo('history')" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:opacity-80 scale-90 duration-150" data-nav="history">
+<span class="material-symbols-outlined nav-icon" id="navIcon-history">history</span>
+<span class="font-label-sm text-label-sm mt-1" id="navLabel-history">Logs</span>
+</button>
+<button onclick="navigateTo('settings')" class="mobile-nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all active:opacity-80 scale-90 duration-150" data-nav="settings">
+<span class="material-symbols-outlined nav-icon" id="navIcon-settings">settings</span>
+<span class="font-label-sm text-label-sm mt-1" id="navLabel-settings">Settings</span>
+</button>
+</div>
+</nav>
 
-                <!-- Pip override -->
-                <div class="pip-override">
-                    <label>Override pip value ($/pip/lot):</label>
-                    <input type="number" id="pipOverride" placeholder="Auto" step="0.01" oninput="calc()" />
-                    <span style="font-size:12px;color:var(--muted2)">Leave blank for auto</span>
-                </div>
+<!-- ========== SCRIPTS ========== -->
+<script>
+(function() {
+    // ──────────── PAIR DATA ────────────
+    const PAIRS = {
+        Majors: [
+            { symbol: "EURUSD", pipVal: 10 },
+            { symbol: "GBPUSD", pipVal: 10 },
+            { symbol: "USDJPY", pipVal: 9.09 },
+            { symbol: "USDCHF", pipVal: 10 },
+            { symbol: "USDCAD", pipVal: 10 },
+            { symbol: "AUDUSD", pipVal: 10 },
+            { symbol: "NZDUSD", pipVal: 10 },
+        ],
+        Minors: [
+            { symbol: "EURJPY", pipVal: 9.09 },
+            { symbol: "GBPJPY", pipVal: 9.09 },
+            { symbol: "AUDJPY", pipVal: 9.09 },
+            { symbol: "CADJPY", pipVal: 9.09 },
+            { symbol: "CHFJPY", pipVal: 9.09 },
+            { symbol: "NZDJPY", pipVal: 9.09 },
+            { symbol: "EURGBP", pipVal: 12.70 },
+            { symbol: "GBPAUD", pipVal: 6.50 },
+            { symbol: "EURAUD", pipVal: 6.50 },
+            { symbol: "GBPCAD", pipVal: 7.40 },
+            { symbol: "EURCAD", pipVal: 7.40 },
+            { symbol: "GBPCHF", pipVal: 11.20 },
+            { symbol: "EURCHF", pipVal: 11.20 },
+            { symbol: "GBPNZD", pipVal: 6.20 },
+            { symbol: "EURNZD", pipVal: 6.20 },
+            { symbol: "AUDCAD", pipVal: 7.40 },
+            { symbol: "AUDCHF", pipVal: 11.20 },
+            { symbol: "AUDNZD", pipVal: 6.20 },
+            { symbol: "NZDCAD", pipVal: 7.40 },
+            { symbol: "CADCHF", pipVal: 11.20 },
+        ],
+        Metals: [
+            { symbol: "XAUUSD", pipVal: 10, note: "Gold" },
+            { symbol: "XAGUSD", pipVal: 5, note: "Silver" },
+            { symbol: "XPTUSD", pipVal: 10, note: "Platinum" },
+            { symbol: "XPDUSD", pipVal: 10, note: "Palladium" },
+        ],
+        Crypto: [
+            { symbol: "BTCUSD", pipVal: 1, note: "Bitcoin" },
+            { symbol: "ETHUSD", pipVal: 0.10, note: "Ethereum" },
+            { symbol: "LTCUSD", pipVal: 0.01, note: "Litecoin" },
+            { symbol: "XRPUSD", pipVal: 0.001, note: "Ripple" },
+            { symbol: "BNBUSD", pipVal: 0.10, note: "BNB" },
+            { symbol: "SOLUSD", pipVal: 0.01, note: "Solana" },
+            { symbol: "ADAUSD", pipVal: 0.001, note: "Cardano" },
+            { symbol: "DOTUSD", pipVal: 0.01, note: "Polkadot" },
+            { symbol: "AVAXUSD", pipVal: 0.01, note: "Avalanche" },
+            { symbol: "MATICUSD", pipVal: 0.001, note: "Polygon" },
+            { symbol: "LNKUSD", pipVal: 0.01, note: "Chainlink" },
+            { symbol: "DOGEUSD", pipVal: 0.0001, note: "Dogecoin" },
+        ],
+        Exotic: [
+            { symbol: "USDZAR", pipVal: 0.55, note: "S.Africa Rand" },
+            { symbol: "USDMXN", pipVal: 0.50, note: "Mexico Peso" },
+            { symbol: "USDTRY", pipVal: 0.30, note: "Turkish Lira" },
+            { symbol: "USDSEK", pipVal: 0.95, note: "Swedish Krona" },
+            { symbol: "USDNOK", pipVal: 0.92, note: "Norwegian Kr" },
+            { symbol: "USDDKK", pipVal: 1.45, note: "Danish Krone" },
+            { symbol: "USDSGD", pipVal: 7.50, note: "Singapore $" },
+            { symbol: "USDHKD", pipVal: 1.28, note: "HK Dollar" },
+            { symbol: "USDCNH", pipVal: 1.38, note: "China Yuan" },
+            { symbol: "USDINR", pipVal: 0.12, note: "Indian Rupee" },
+            { symbol: "EURPLN", pipVal: 2.50, note: "Polish Zloty" },
+            { symbol: "USDCZK", pipVal: 0.44, note: "Czech Koruna" },
+            { symbol: "USDHUF", pipVal: 0.028, note: "Hungarian Ft" },
+        ],
+    };
 
-                <!-- Formula -->
-                <div class="formula-box" style="margin-top:16px">
-                    <div class="formula-title">How it's calculated</div>
-                    <div class="formula-eq" id="formulaLine">
-                        Lot Size = <span class="hl">Risk $</span> ÷ (SL pips × pip value per lot)<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = <span class="eq" id="fCalc">$25 ÷ (20 × $10)
-                            = <strong style="color:var(--green)">0.13 lots</strong></span>
-                    </div>
-                </div>
+    // ──────────── STATE ────────────
+    let currentScreen = 'calc';
+    let currentCategory = 'Majors';
+    let selectedPair = PAIRS.Majors[0];
+    let history = [];
+    let historyTimer = null;
 
-            </div>
-        </div>
+    // ──────────── DOM REFS ────────────
+    const $ = (id) => document.getElementById(id);
+    const balanceInput = $('balance');
+    const riskPctInput = $('riskPct');
+    const riskSlider = $('riskSlider');
+    const riskDisplay = $('riskDisplay');
+    const slPipsInput = $('slPips');
+    const pipOverrideInput = $('pipOverride');
+    const lotDisplay = $('lotDisplay');
+    const riskAmtDisplay = $('riskAmtDisplay');
+    const riskPctLabel = $('riskPctLabel');
+    const t2Display = $('t2Display');
+    const t3Display = $('t3Display');
+    const pipValStat = $('pipValStat');
+    const pairStat = $('pairStat');
+    const formulaDetail = $('formulaDetail');
+    const calcPairDisplay = $('calcPairDisplay');
+    const calcPipValDisplay = $('calcPipValDisplay');
+    const headerBalance = $('headerBalance');
+    const warningBox = $('warningBox');
+    const warningText = $('warningText');
+    const resultsCard = $('resultsCard');
+    const calcBtn = $('calcBtn');
+    const pairsList = $('pairsList');
+    const pairSearchInput = $('pairSearch');
+    const historyContent = $('historyContent');
+    const historyEmpty = $('historyEmpty');
+    const defaultRiskInput = $('defaultRisk');
 
-        <!-- History -->
-        <div class="history-card">
-            <div class="history-header">
-                <div class="history-title">📋 Calculation History</div>
-                <button class="clear-btn" onclick="clearHistory()">Clear all</button>
-            </div>
-            <div class="history-list" id="historyList">
-                <div class="history-empty" id="historyEmpty">No calculations yet — start entering values above.</div>
-            </div>
-        </div>
+    // ──────────── NAVIGATION ────────────
+    function navigateTo(screen) {
+        currentScreen = screen;
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById('screen-' + screen);
+        if (target) target.classList.add('active');
 
-        <footer>
-            <p><strong>Pip values are approximate</strong> and may differ slightly between brokers.</p>
-            <p>Crypto pip values vary greatly — always verify with your broker's contract specs.</p>
-            <p style="margin-top:8px">Built for Goat Funded account · 1% risk = $25 max on $2,500</p>
-        </footer>
+        // Update desktop nav
+        document.querySelectorAll('header .nav-link').forEach(btn => {
+            const nav = btn.getAttribute('data-nav');
+            if (nav === screen) {
+                btn.classList.add('text-secondary', 'bg-surface-container-high', 'font-bold', 'shadow-sm', 'border', 'border-outline-variant/10');
+                btn.classList.remove('text-on-surface-variant');
+            } else {
+                btn.classList.remove('text-secondary', 'bg-surface-container-high', 'font-bold', 'shadow-sm', 'border', 'border-outline-variant/10');
+                btn.classList.add('text-on-surface-variant');
+            }
+        });
 
-    </div>
+        // Update mobile nav
+        document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+            const nav = btn.getAttribute('data-nav');
+            const icon = document.getElementById('navIcon-' + nav);
+            const label = document.getElementById('navLabel-' + nav);
+            if (nav === screen) {
+                if (icon) { icon.classList.add('active-icon'); icon.style.fontVariationSettings = "'FILL' 1"; icon.style.color = '#44e092'; }
+                if (label) { label.style.color = '#44e092'; label.style.fontWeight = '700'; }
+            } else {
+                if (icon) { icon.classList.remove('active-icon'); icon.style.fontVariationSettings = "'FILL' 0"; icon.style.color = ''; }
+                if (label) { label.style.color = ''; label.style.fontWeight = ''; }
+            }
+        });
 
-    <script>
-        (function() {
-            // ─────────────────────────────────────
-            // DATA
-            // ─────────────────────────────────────
-            const PAIRS = {
-                Majors: [
-                    { symbol: "EURUSD", pipVal: 10 },
-                    { symbol: "GBPUSD", pipVal: 10 },
-                    { symbol: "USDJPY", pipVal: 9.09 },
-                    { symbol: "USDCHF", pipVal: 10 },
-                    { symbol: "USDCAD", pipVal: 10 },
-                    { symbol: "AUDUSD", pipVal: 10 },
-                    { symbol: "NZDUSD", pipVal: 10 },
-                ],
-                Minors: [
-                    { symbol: "EURJPY", pipVal: 9.09 },
-                    { symbol: "GBPJPY", pipVal: 9.09 },
-                    { symbol: "AUDJPY", pipVal: 9.09 },
-                    { symbol: "CADJPY", pipVal: 9.09 },
-                    { symbol: "CHFJPY", pipVal: 9.09 },
-                    { symbol: "NZDJPY", pipVal: 9.09 },
-                    { symbol: "EURGBP", pipVal: 12.70 },
-                    { symbol: "GBPAUD", pipVal: 6.50 },
-                    { symbol: "EURAUD", pipVal: 6.50 },
-                    { symbol: "GBPCAD", pipVal: 7.40 },
-                    { symbol: "EURCAD", pipVal: 7.40 },
-                    { symbol: "GBPCHF", pipVal: 11.20 },
-                    { symbol: "EURCHF", pipVal: 11.20 },
-                    { symbol: "GBPNZD", pipVal: 6.20 },
-                    { symbol: "EURNZD", pipVal: 6.20 },
-                    { symbol: "AUDCAD", pipVal: 7.40 },
-                    { symbol: "AUDCHF", pipVal: 11.20 },
-                    { symbol: "AUDNZD", pipVal: 6.20 },
-                    { symbol: "NZDCAD", pipVal: 7.40 },
-                    { symbol: "CADCHF", pipVal: 11.20 },
-                ],
-                Metals: [
-                    { symbol: "XAUUSD", pipVal: 10, note: "Gold" },
-                    { symbol: "XAGUSD", pipVal: 5, note: "Silver" },
-                    { symbol: "XPTUSD", pipVal: 10, note: "Platinum" },
-                    { symbol: "XPDUSD", pipVal: 10, note: "Palladium" },
-                ],
-                Crypto: [
-                    { symbol: "BTCUSD", pipVal: 1, note: "Bitcoin" },
-                    { symbol: "ETHUSD", pipVal: 0.10, note: "Ethereum" },
-                    { symbol: "LTCUSD", pipVal: 0.01, note: "Litecoin" },
-                    { symbol: "XRPUSD", pipVal: 0.001, note: "Ripple" },
-                    { symbol: "BNBUSD", pipVal: 0.10, note: "BNB" },
-                    { symbol: "SOLUSD", pipVal: 0.01, note: "Solana" },
-                    { symbol: "ADAUSD", pipVal: 0.001, note: "Cardano" },
-                    { symbol: "DOTUSD", pipVal: 0.01, note: "Polkadot" },
-                    { symbol: "AVAXUSD", pipVal: 0.01, note: "Avalanche" },
-                    { symbol: "MATICUSD", pipVal: 0.001, note: "Polygon" },
-                    { symbol: "LNKUSD", pipVal: 0.01, note: "Chainlink" },
-                    { symbol: "DOGEUSD", pipVal: 0.0001, note: "Dogecoin" },
-                ],
-                Exotic: [
-                    { symbol: "USDZAR", pipVal: 0.55, note: "S.Africa Rand" },
-                    { symbol: "USDMXN", pipVal: 0.50, note: "Mexico Peso" },
-                    { symbol: "USDTRY", pipVal: 0.30, note: "Turkish Lira" },
-                    { symbol: "USDSEK", pipVal: 0.95, note: "Swedish Krona" },
-                    { symbol: "USDNOK", pipVal: 0.92, note: "Norwegian Kr" },
-                    { symbol: "USDDKK", pipVal: 1.45, note: "Danish Krone" },
-                    { symbol: "USDSGD", pipVal: 7.50, note: "Singapore $" },
-                    { symbol: "USDHKD", pipVal: 1.28, note: "HK Dollar" },
-                    { symbol: "USDCNH", pipVal: 1.38, note: "China Yuan" },
-                    { symbol: "USDINR", pipVal: 0.12, note: "Indian Rupee" },
-                    { symbol: "EURPLN", pipVal: 2.50, note: "Polish Zloty" },
-                    { symbol: "USDCZK", pipVal: 0.44, note: "Czech Koruna" },
-                    { symbol: "USDHUF", pipVal: 0.028, note: "Hungarian Ft" },
-                ],
-            };
+        if (screen === 'pairs') renderPairsList(pairSearchInput.value.trim());
+        if (screen === 'history') renderHistory();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-            // ─────────────────────────────────────
-            // STATE
-            // ─────────────────────────────────────
-            let currentCategory = 'Majors';
-            let selectedPair = PAIRS.Majors[0]; // EURUSD
-            let history = [];
-            let historyTimer = null;
+    window.navigateTo = navigateTo;
 
-            // ─────────────────────────────────────
-            // DOM REFS
-            // ─────────────────────────────────────
-            const tabBar = document.getElementById('tabBar');
-            const pairGrid = document.getElementById('pairGrid');
-            const pairSearch = document.getElementById('pairSearch');
-            const balanceInput = document.getElementById('balance');
-            const riskSlider = document.getElementById('riskSlider');
-            const riskPctInput = document.getElementById('riskPct');
-            const riskDisplay = document.getElementById('riskDisplay');
-            const slPipsInput = document.getElementById('slPips');
-            const pipOverrideInput = document.getElementById('pipOverride');
-            const lotDisplay = document.getElementById('lotDisplay');
-            const pairBadge = document.getElementById('pairBadge');
-            const riskAmtEl = document.getElementById('riskAmt');
-            const t2El = document.getElementById('t2');
-            const t3El = document.getElementById('t3');
-            const pipValDisplay = document.getElementById('pipValDisplay');
-            const fCalcEl = document.getElementById('fCalc');
-            const warningEl = document.getElementById('warning');
-            const warningText = document.getElementById('warningText');
-            const historyList = document.getElementById('historyList');
-            const historyEmpty = document.getElementById('historyEmpty');
+    // ──────────── PAIR SELECTION ────────────
+    function selectPair(sym, navigateBack) {
+        let found = null;
+        Object.values(PAIRS).forEach(arr => arr.forEach(p => { if (p.symbol === sym) found = p; }));
+        if (found) {
+            selectedPair = found;
+            pipOverrideInput.value = '';
+            updatePairDisplay();
+            calc(false);
+            if (navigateBack) navigateTo('calc');
+            if (currentScreen === 'pairs') renderPairsList(pairSearchInput.value.trim());
+        }
+    }
 
-            // ─────────────────────────────────────
-            // TAB SWITCHING (event delegation)
-            // ─────────────────────────────────────
-            tabBar.addEventListener('click', function(e) {
-                const tab = e.target.closest('.tab');
-                if (!tab) return;
-                const cat = tab.getAttribute('data-category');
-                if (!cat || cat === currentCategory) return;
-                setCategory(cat);
-            });
+    window.selectPair = selectPair;
 
-            function setCategory(cat) {
-                currentCategory = cat;
+    function updatePairDisplay() {
+        calcPairDisplay.textContent = selectedPair.symbol;
+        const pipVal = getEffectivePipVal();
+        calcPipValDisplay.textContent = 'Pip value: $' + pipVal.toFixed(4) + '/lot';
+        pairStat.textContent = selectedPair.symbol;
+        pipValStat.textContent = '$' + pipVal.toFixed(4);
+    }
 
-                // Update active tab styling
-                const tabs = tabBar.querySelectorAll('.tab');
-                tabs.forEach(t => t.classList.remove('active'));
-                const activeTab = tabBar.querySelector(`.tab[data-category="${cat}"]`);
-                if (activeTab) activeTab.classList.add('active');
+    function getEffectivePipVal() {
+        const override = pipOverrideInput.value.trim();
+        return override ? parseFloat(override) : selectedPair.pipVal;
+    }
 
-                // Clear search
-                pairSearch.value = '';
-
-                // Auto-select first pair in the new category
-                if (PAIRS[cat] && PAIRS[cat].length > 0) {
-                    selectedPair = PAIRS[cat][0];
+    // ──────────── PAIRS LIST RENDERING ────────────
+    function renderPairsList(filter) {
+        let source = [];
+        if (filter) {
+            Object.values(PAIRS).forEach(arr => arr.forEach(p => {
+                const sym = p.symbol.toLowerCase();
+                const note = (p.note || '').toLowerCase();
+                if (sym.includes(filter.toLowerCase()) || note.includes(filter.toLowerCase())) {
+                    if (!source.find(e => e.symbol === p.symbol)) source.push(p);
                 }
-                // Clear pip override so auto pip value is used
-                pipOverrideInput.value = '';
+            }));
+        } else {
+            source = PAIRS[currentCategory] || [];
+        }
 
-                // Re-render grid for the new category
-                renderGrid();
-                // Recalculate with new pair
-                calc();
-            }
-
-            // ─────────────────────────────────────
-            // RENDER PAIR GRID
-            // ─────────────────────────────────────
-            function renderGrid(filter = '') {
-                let source = [];
-
-                if (filter) {
-                    // Search across ALL categories
-                    Object.values(PAIRS).forEach(arr => {
-                        arr.forEach(p => {
-                            const sym = p.symbol.toLowerCase();
-                            const note = (p.note || '').toLowerCase();
-                            const q = filter.toLowerCase();
-                            if (sym.includes(q) || note.includes(q)) {
-                                // Avoid duplicates (same symbol in multiple categories)
-                                if (!source.find(existing => existing.symbol === p.symbol)) {
-                                    source.push(p);
-                                }
-                            }
-                        });
-                    });
-                } else {
-                    source = PAIRS[currentCategory] || [];
-                }
-
-                pairGrid.innerHTML = source.map(p => {
-                    const isActive = p.symbol === selectedPair.symbol;
-                    return `
-                <button class="pair-btn ${isActive ? 'active' : ''}"
-                  data-symbol="${p.symbol}">
-                  ${p.symbol}
-                  ${p.note ? `<span class="pair-sub">${p.note}</span>` : ''}
-                </button>
-              `;
-                }).join('');
-            }
-
-            // ─────────────────────────────────────
-            // FILTER PAIRS (search)
-            // ─────────────────────────────────────
-            function filterPairs() {
-                const q = pairSearch.value.trim();
-                renderGrid(q);
-            }
-
-            // Expose to inline handler
-            window.filterPairs = filterPairs;
-
-            // ─────────────────────────────────────
-            // SELECT PAIR (event delegation on grid)
-            // ─────────────────────────────────────
-            pairGrid.addEventListener('click', function(e) {
-                const btn = e.target.closest('.pair-btn');
-                if (!btn) return;
-                const sym = btn.getAttribute('data-symbol');
-                if (!sym) return;
-                selectPair(sym);
-            });
-
-            function selectPair(sym) {
-                let found = null;
-                // Search across all categories
-                Object.values(PAIRS).forEach(arr => {
-                    arr.forEach(p => {
-                        if (p.symbol === sym) found = p;
-                    });
-                });
-                if (found) {
-                    selectedPair = found;
-                    // Clear manual override so auto pip value kicks in
-                    pipOverrideInput.value = '';
-                    // Re-render to highlight the newly selected pair
-                    renderGrid(pairSearch.value.trim());
-                    // Recalculate
-                    calc();
-                }
-            }
-
-            // ─────────────────────────────────────
-            // RISK SYNC
-            // ─────────────────────────────────────
-            function syncRiskFromSlider(val) {
-                const v = parseFloat(val) || 1;
-                const clamped = Math.min(Math.max(v, 0.1), 5);
-                riskPctInput.value = clamped;
-                riskDisplay.textContent = clamped.toFixed(1) + '%';
-                calc();
-            }
-
-            function syncRiskFromInput(val) {
-                const v = parseFloat(val) || 1;
-                const clamped = Math.min(Math.max(v, 0.1), 10);
-                riskSlider.value = Math.min(clamped, 5);
-                riskDisplay.textContent = clamped.toFixed(1) + '%';
-                calc();
-            }
-
-            // Expose to inline handlers
-            window.syncRiskFromSlider = syncRiskFromSlider;
-            window.syncRiskFromInput = syncRiskFromInput;
-
-            // ─────────────────────────────────────
-            // MAIN CALCULATION
-            // ─────────────────────────────────────
-            function calc() {
-                const balance = parseFloat(balanceInput.value) || 0;
-                const riskPct = parseFloat(riskPctInput.value) || 0;
-                const slPips = parseFloat(slPipsInput.value) || 1;
-                const overrideVal = pipOverrideInput.value.trim();
-                const pipVal = overrideVal ? parseFloat(overrideVal) : (selectedPair ? selectedPair.pipVal : 10);
-
-                const riskAmt = (balance * riskPct) / 100;
-                const lotSize = riskAmt / (slPips * pipVal);
-                const t2 = riskAmt * 2;
-                const t3 = riskAmt * 3;
-
-                // Update main lot display
-                lotDisplay.innerHTML =
-                    lotSize.toFixed(2) + '<span class="result-lot-unit">lots</span>';
-
-                // Update pair badge
-                if (selectedPair) {
-                    pairBadge.textContent = selectedPair.symbol + (selectedPair.note ? ' · ' + selectedPair
-                        .note : '');
-                }
-
-                // Update stats
-                riskAmtEl.textContent = '$' + riskAmt.toFixed(2);
-                t2El.textContent = '$' + t2.toFixed(2);
-                t3El.textContent = '$' + t3.toFixed(2);
-                pipValDisplay.textContent = '$' + pipVal.toFixed(4);
-
-                // Update formula
-                fCalcEl.innerHTML =
-                    `$${riskAmt.toFixed(2)} ÷ (${slPips} × $${pipVal.toFixed(4)}) = <strong style="color:var(--green)">${lotSize.toFixed(2)} lots</strong>`;
-
-                // Warnings
-                if (riskAmt > 100) {
-                    warningEl.className = 'warning show';
-                    warningText.textContent =
-                        `Risk $${riskAmt.toFixed(2)} exceeds your $100 max drawdown in ONE trade! Reduce risk%.`;
-                } else if (riskAmt > 33) {
-                    warningEl.className = 'warning show';
-                    warningText.textContent =
-                        `Risk $${riskAmt.toFixed(2)} is over the recommended $30 daily cap. Be careful.`;
-                } else {
-                    warningEl.className = 'warning';
-                }
-
-                // Debounce history save
-                addHistory({
-                    pair: selectedPair ? selectedPair.symbol : 'N/A',
-                    lot: lotSize.toFixed(2),
-                    risk: riskAmt.toFixed(2),
-                    sl: slPips,
-                    balance: balance
-                });
-            }
-
-            // Expose calc to inline handlers
-            window.calc = calc;
-
-            // ─────────────────────────────────────
-            // HISTORY
-            // ─────────────────────────────────────
-            function addHistory(entry) {
-                clearTimeout(historyTimer);
-                historyTimer = setTimeout(() => {
-                    // Avoid duplicate consecutive entries
-                    if (history.length > 0 &&
-                        history[0].pair === entry.pair &&
-                        history[0].lot === entry.lot &&
-                        history[0].risk === entry.risk &&
-                        history[0].sl === entry.sl &&
-                        history[0].balance === entry.balance) {
-                        return;
-                    }
-                    history.unshift({
-                        ...entry,
-                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',
-                            second: '2-digit' })
-                    });
-                    // Keep max 10 entries
-                    if (history.length > 10) history.pop();
-                    renderHistory();
-                }, 600);
-            }
-
-            function renderHistory() {
-                if (!history.length) {
-                    historyList.innerHTML =
-                        '<div class="history-empty">No calculations yet — start entering values above.</div>';
-                    return;
-                }
-                historyList.innerHTML = history.map(h => `
-              <div class="history-item">
-                <div>
-                  <div class="h-pair">${h.pair}</div>
-                  <div class="h-details">${h.sl} pips · $${h.balance.toLocaleString()} balance · ${h.time}</div>
+        pairsList.innerHTML = source.map(p => {
+            const isActive = p.symbol === selectedPair.symbol;
+            return `
+            <div class="flex justify-between items-center py-sm px-gutter border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors cursor-pointer ${isActive ? 'bg-primary/10 border-l-4 border-l-primary' : 'border-l-4 border-l-transparent'}" onclick="selectPair('${p.symbol}', true)">
+              <div class="flex items-center gap-md">
+                <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center ${isActive ? 'text-primary border border-primary/20' : 'text-on-surface-variant'}">
+                  <span class="material-symbols-outlined text-[20px]">currency_exchange</span>
                 </div>
-                <div style="text-align:right">
-                  <div class="h-lot">${h.lot} lots</div>
-                  <div class="h-risk">Risk: $${h.risk}</div>
+                <div class="flex flex-col">
+                  <span class="font-data-lg text-data-lg text-on-surface">${p.symbol}</span>
+                  <span class="font-label-sm text-label-sm ${isActive ? 'text-primary' : 'text-outline-variant'}">${p.note || 'Pip: $' + p.pipVal.toFixed(4)}${isActive ? ' · Selected' : ''}</span>
                 </div>
               </div>
-            `).join('');
-            }
+              <div class="flex flex-col items-end">
+                <span class="font-label-sm text-label-sm text-on-surface tracking-wider">$${p.pipVal.toFixed(4)}</span>
+                <span class="font-label-sm text-label-sm text-secondary">/pip/lot</span>
+              </div>
+            </div>`;
+        }).join('');
 
-            function clearHistory() {
-                history = [];
-                renderHistory();
-            }
+        if (source.length === 0) {
+            pairsList.innerHTML = '<div class="p-lg text-center text-on-surface-variant font-body-md">No pairs found. Try a different search.</div>';
+        }
+    }
 
-            // Expose clearHistory to inline handler
-            window.clearHistory = clearHistory;
+    function filterPairs() {
+        const q = pairSearchInput.value.trim();
+        renderPairsList(q);
+    }
 
-            // ─────────────────────────────────────
-            // INIT
-            // ─────────────────────────────────────
-            function init() {
-                renderGrid();
-                calc();
-            }
+    window.filterPairs = filterPairs;
 
-            // Run on DOM ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
+    // ──────────── CATEGORY TABS ────────────
+    document.getElementById('categoryTabs').addEventListener('click', function(e) {
+        const tab = e.target.closest('.cat-tab');
+        if (!tab) return;
+        const cat = tab.getAttribute('data-cat');
+        if (!cat) return;
+        currentCategory = cat;
+        document.querySelectorAll('.cat-tab').forEach(t => {
+            t.classList.remove('border-primary', 'text-primary', 'font-semibold');
+            t.classList.add('border-transparent', 'text-on-surface-variant');
+        });
+        tab.classList.add('border-primary', 'text-primary', 'font-semibold');
+        tab.classList.remove('border-transparent', 'text-on-surface-variant');
+        pairSearchInput.value = '';
+        renderPairsList('');
+    });
+
+    // ──────────── RISK SYNC ────────────
+    function syncRiskFromSlider(val) {
+        const v = parseFloat(val) || 1;
+        const clamped = Math.min(Math.max(v, 0.1), 5);
+        riskPctInput.value = clamped;
+        riskDisplay.textContent = clamped.toFixed(1) + '%';
+        onInputChange();
+    }
+
+    function syncRiskFromInput(val) {
+        const v = parseFloat(val) || 1;
+        const clamped = Math.min(Math.max(v, 0.1), 10);
+        riskSlider.value = Math.min(clamped, 5);
+        riskDisplay.textContent = clamped.toFixed(1) + '%';
+        onInputChange();
+    }
+
+    window.syncRiskFromSlider = syncRiskFromSlider;
+    window.syncRiskFromInput = syncRiskFromInput;
+
+    function onInputChange() {
+        calc(false);
+    }
+
+    window.onInputChange = onInputChange;
+
+    // ──────────── CALCULATION ────────────
+    function calc(animate) {
+        const balance = parseFloat(balanceInput.value) || 0;
+        const riskPct = parseFloat(riskPctInput.value) || 0;
+        const slPips = parseFloat(slPipsInput.value) || 1;
+        const pipVal = getEffectivePipVal();
+
+        const riskAmt = (balance * riskPct) / 100;
+        const lotSize = slPips > 0 && pipVal > 0 ? riskAmt / (slPips * pipVal) : 0;
+        const t2 = riskAmt * 2;
+        const t3 = riskAmt * 3;
+
+        // Update displays
+        lotDisplay.textContent = lotSize.toFixed(2);
+        riskAmtDisplay.textContent = '-$' + riskAmt.toFixed(2);
+        riskPctLabel.textContent = 'Based on ' + riskPct.toFixed(1) + '% Risk';
+        t2Display.textContent = '$' + t2.toFixed(2);
+        t3Display.textContent = '$' + t3.toFixed(2);
+        pipValStat.textContent = '$' + pipVal.toFixed(4);
+        pairStat.textContent = selectedPair.symbol;
+        headerBalance.textContent = '$' + balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        formulaDetail.innerHTML = '$' + riskAmt.toFixed(2) + ' ÷ (' + slPips + ' × $' + pipVal.toFixed(4) + ') = <strong class="text-secondary">' + lotSize.toFixed(2) + ' lots</strong>';
+
+        // Warnings
+        const maxRisk = balance * 0.03;
+        const elevatedRisk = balance * 0.02;
+        if (riskAmt > maxRisk && balance > 0) {
+            warningBox.classList.remove('hidden');
+            warningBox.classList.add('flex');
+            warningText.textContent = 'High risk! $' + riskAmt.toFixed(2) + ' exceeds 3% of balance. Consider reducing risk%.';
+        } else if (riskAmt > elevatedRisk && balance > 0) {
+            warningBox.classList.remove('hidden');
+            warningBox.classList.add('flex');
+            warningText.textContent = 'Elevated risk: $' + riskAmt.toFixed(2) + ' is over 2% of balance. Be cautious.';
+        } else {
+            warningBox.classList.add('hidden');
+            warningBox.classList.remove('flex');
+        }
+
+        // Pulse animation
+        if (animate) {
+            resultsCard.classList.remove('pulse-glow');
+            void resultsCard.offsetWidth;
+            resultsCard.classList.add('pulse-glow');
+        }
+
+        // Save to history
+        addHistory({
+            pair: selectedPair.symbol,
+            lot: lotSize.toFixed(2),
+            risk: riskAmt.toFixed(2),
+            sl: slPips,
+            balance: balance,
+            riskPct: riskPct
+        });
+    }
+
+    window.calc = calc;
+
+    // ──────────── HISTORY ────────────
+    function addHistory(entry) {
+        clearTimeout(historyTimer);
+        historyTimer = setTimeout(() => {
+            if (history.length > 0 &&
+                history[0].pair === entry.pair &&
+                history[0].lot === entry.lot &&
+                history[0].risk === entry.risk &&
+                history[0].sl === entry.sl &&
+                history[0].balance === entry.balance) return;
+            history.unshift({ ...entry, time: new Date().toISOString() });
+            if (history.length > 20) history.pop();
+            saveHistoryToStorage();
+            if (currentScreen === 'history') renderHistory();
+        }, 600);
+    }
+
+    function renderHistory() {
+        if (!history.length) {
+            historyContent.innerHTML = '<div class="text-center py-xl text-on-surface-variant font-body-md" id="historyEmpty">No calculations yet — start calculating above.</div>';
+            return;
+        }
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterday = new Date(today.getTime() - 86400000);
+
+        const groups = {};
+        history.forEach(h => {
+            const d = new Date(h.time);
+            const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+            let key;
+            if (day.getTime() === today.getTime()) key = 'Today';
+            else if (day.getTime() === yesterday.getTime()) key = 'Yesterday';
+            else key = d.toLocaleDateString();
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(h);
+        });
+
+        let html = '';
+        const groupOrder = ['Today', 'Yesterday'];
+        const sortedKeys = Object.keys(groups).sort((a, b) => {
+            const ai = groupOrder.indexOf(a);
+            const bi = groupOrder.indexOf(b);
+            if (ai !== -1 && bi !== -1) return ai - bi;
+            if (ai !== -1) return -1;
+            if (bi !== -1) return 1;
+            return b.localeCompare(a);
+        });
+
+        sortedKeys.forEach(key => {
+            html += `
+            <section class="mb-xl">
+              <div class="flex items-center gap-md mb-md ${key === 'Today' ? '' : 'opacity-80'}">
+                <h3 class="font-headline-md text-headline-md ${key === 'Today' ? 'text-primary' : 'text-on-surface-variant'}">${key}</h3>
+                <div class="h-px bg-outline-variant/20 flex-1"></div>
+              </div>
+              <div class="flex flex-col gap-sm">`;
+            groups[key].forEach((h, i) => {
+                const d = new Date(h.time);
+                const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const isOlder = key !== 'Today';
+                html += `
+                <div class="bg-surface-container-low rounded-xl border ${isOlder ? 'border-outline-variant/5' : 'border-outline-variant/10'} p-md flex flex-col md:flex-row md:items-center justify-between gap-md hover:bg-surface-container-high/50 hover:border-outline-variant/30 transition-all duration-200 group relative overflow-hidden">
+                  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+                  <div class="flex items-center gap-md min-w-[160px]">
+                    <div class="w-10 h-10 rounded-full ${isOlder ? 'bg-surface-container/50' : 'bg-surface-container-high'} flex items-center justify-center border border-outline-variant/20 shadow-inner">
+                      <span class="material-symbols-outlined ${isOlder ? 'text-outline' : 'text-primary'}">currency_exchange</span>
+                    </div>
+                    <div>
+                      <div class="font-data-lg text-data-lg ${isOlder ? 'text-on-surface-variant' : 'text-on-surface'} tracking-tight">${h.pair}</div>
+                      <div class="font-label-sm text-label-sm ${isOlder ? 'text-outline/70' : 'text-outline'} flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-[14px]">schedule</span> ${timeStr}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex-1 grid grid-cols-3 gap-md ${isOlder ? 'bg-surface-container/30' : 'bg-surface-container/50'} p-sm rounded-lg border border-outline-variant/5">
+                    <div class="flex flex-col">
+                      <span class="font-label-sm text-label-sm ${isOlder ? 'text-outline' : 'text-on-surface-variant'} mb-xs">Lot Size</span>
+                      <span class="font-data-lg text-data-lg ${isOlder ? 'text-on-surface-variant' : 'text-on-surface'}">${h.lot}</span>
+                    </div>
+                    <div class="flex flex-col border-l border-outline-variant/10 pl-md">
+                      <span class="font-label-sm text-label-sm ${isOlder ? 'text-outline' : 'text-on-surface-variant'} mb-xs">Risk Amt</span>
+                      <span class="font-data-lg text-data-lg ${isOlder ? 'text-error/80' : 'text-tertiary'}">-$${h.risk}</span>
+                    </div>
+                    <div class="flex flex-col border-l border-outline-variant/10 pl-md">
+                      <span class="font-label-sm text-label-sm ${isOlder ? 'text-outline' : 'text-on-surface-variant'} mb-xs">Stop Loss</span>
+                      <span class="font-data-lg text-data-lg ${isOlder ? 'text-on-surface-variant' : 'text-on-surface'}">${h.sl} <span class="text-label-sm font-label-sm ${isOlder ? 'text-outline/70' : 'text-outline'}">pips</span></span>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-sm justify-end md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <button onclick="reuseEntry(${history.indexOf(h)})" class="bg-primary-container text-on-primary-container hover:bg-primary-container/80 px-md py-sm rounded-lg font-label-sm text-label-sm flex items-center gap-xs transition-colors shadow-sm">
+                      <span class="material-symbols-outlined text-[18px]">replay</span> Reuse
+                    </button>
+                    <button onclick="deleteEntry(${history.indexOf(h)})" class="text-outline hover:text-error hover:bg-error-container/20 p-sm rounded-lg transition-colors flex items-center justify-center border border-transparent hover:border-error/20">
+                      <span class="material-symbols-outlined text-[20px]">delete</span>
+                    </button>
+                  </div>
+                </div>`;
+            });
+            html += '</div></section>';
+        });
+
+        historyContent.innerHTML = html;
+    }
+
+    function reuseEntry(index) {
+        if (index < 0 || index >= history.length) return;
+        const h = history[index];
+        balanceInput.value = h.balance;
+        riskPctInput.value = h.riskPct || 1;
+        riskSlider.value = Math.min(h.riskPct || 1, 5);
+        riskDisplay.textContent = (h.riskPct || 1).toFixed(1) + '%';
+        slPipsInput.value = h.sl;
+        pipOverrideInput.value = '';
+        selectPairSilent(h.pair);
+        navigateTo('calc');
+        calc(true);
+    }
+
+    function deleteEntry(index) {
+        if (index < 0 || index >= history.length) return;
+        history.splice(index, 1);
+        saveHistoryToStorage();
+        renderHistory();
+        if (!history.length) {
+            historyContent.innerHTML = '<div class="text-center py-xl text-on-surface-variant font-body-md">No calculations yet — start calculating above.</div>';
+        }
+    }
+
+    function clearHistory() {
+        history = [];
+        saveHistoryToStorage();
+        historyContent.innerHTML = '<div class="text-center py-xl text-on-surface-variant font-body-md">No calculations yet — start calculating above.</div>';
+    }
+
+    function selectPairSilent(sym) {
+        let found = null;
+        Object.values(PAIRS).forEach(arr => arr.forEach(p => { if (p.symbol === sym) found = p; }));
+        if (found) {
+            selectedPair = found;
+            pipOverrideInput.value = '';
+            updatePairDisplay();
+        }
+    }
+
+    window.reuseEntry = reuseEntry;
+    window.deleteEntry = deleteEntry;
+    window.clearHistory = clearHistory;
+
+    // ──────────── LOCAL STORAGE ────────────
+    function saveHistoryToStorage() {
+        try {
+            localStorage.setItem('lotcalc_history', JSON.stringify(history));
+        } catch (e) {}
+    }
+
+    function loadHistoryFromStorage() {
+        try {
+            const raw = localStorage.getItem('lotcalc_history');
+            if (raw) history = JSON.parse(raw);
+        } catch (e) { history = []; }
+    }
+
+    function saveSettings() {
+        try {
+            localStorage.setItem('lotcalc_settings', JSON.stringify({
+                defaultRisk: defaultRiskInput.value,
+                baseCurrency: $('baseCurrency').value,
+                pipMethod: $('pipMethod').value,
+            }));
+        } catch (e) {}
+    }
+
+    function loadSettings() {
+        try {
+            const raw = localStorage.getItem('lotcalc_settings');
+            if (raw) {
+                const s = JSON.parse(raw);
+                if (s.defaultRisk) defaultRiskInput.value = s.defaultRisk;
+                if (s.baseCurrency) $('baseCurrency').value = s.baseCurrency;
+                if (s.pipMethod) $('pipMethod').value = s.pipMethod;
             }
-        })();
-    </script>
+        } catch (e) {}
+    }
+
+    window.saveSettings = saveSettings;
+
+    // ──────────── INIT ────────────
+    function init() {
+        loadHistoryFromStorage();
+        loadSettings();
+        updatePairDisplay();
+        calc(false);
+        renderPairsList('');
+        renderHistory();
+        // Apply default risk from settings
+        const defRisk = parseFloat(defaultRiskInput.value) || 1;
+        riskPctInput.value = defRisk;
+        riskSlider.value = Math.min(defRisk, 5);
+        riskDisplay.textContent = defRisk.toFixed(1) + '%';
+        headerBalance.textContent = '$' + (parseFloat(balanceInput.value) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        navigateTo('calc');
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
 </body>
 </html>
